@@ -1,0 +1,485 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.css" type="text/css"/>
+<link rel="stylesheet" href="css/jquery.mobile.theme-1.4.5.min.css" type="text/css"  />
+<link rel="stylesheet" href="css/jquery.mobile.structure-1.4.5.min.css" type="text/css" />
+<script src="cordova.js"></script>
+<script src="js/jquery.min.js" type="text/javascript"></script>
+<script src="js/jquery-ui.js" type="text/javascript"></script>
+<script src="js/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script type="text/javascript" src="phonegap.js"></script>
+<script type="text/javascript" src="js/jquery-2.2.0.min.js" ></script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js" ></script>
+
+
+    <script type="text/javascript">
+        $(document).on("pageinit","#Principal", function(e, data){
+            /// variables
+  var foto ;
+ var mapa;
+ var miOptions;
+ var defaultPos;
+ var opciones;
+ var marca;
+ var infoVentanta;
+ 
+ defaultPos=new  google.maps.LatLng(19.463948, -97.686259);
+ opciones={maximumAge:500000,enableHighAccuracy:true,timeout:5000};
+   document.addEventListener("deviceready", onDeviceReady, false);   
+    function onDeviceReady() {
+	$("#btnEnviar").tap(function env(){
+               if($("#imagen").attr("src")==""){
+            alert("Antes de registrar el servicio debe tomar una fotografía del mismo ");
+	      }else{
+		var neg=$("#txtnegocio").val();
+		var dir=$("#txtdireccion").val();
+		var rfc=$("#txtRFC").val();
+		var tel=$("#txtTel").val();
+                var cor=$("#txtcorreo").val();
+                var cla=$("#txtclasif").val();
+                var la=$("#txtLatitud").val();
+                var long=$("#txtLongitud").val();
+            
+			$.ajax({
+				type:"POST",
+				url:"guardar.php",
+				data:"nego="+neg+"&dire="+dir+"&rff="+rfc+"&tell="+tel+"&core="+cor+"&clas="+cla+"&lat="+la+"&logi="+long,
+				success: exitoso
+
+			});
+			
+			function exitoso(datos){
+				alert("Respuesta: "+datos);
+			}
+
+		}
+                uploadPhoto($("#imagen").attr("src"));
+	});
+          $("#btnObtCoords").tap(function(){
+            obtenerUbicacion();
+        });
+           ///Codigo camara
+  $("#btnTomarFoto").tap(function (){//Capturar fotografia
+            navigator.device.capture.captureImage(function(mediaFiles){
+                alert("listo");
+		path = mediaFiles[0].fullPath;
+		$('#imagen').append('<br><img id="imagen" src="'+path+'" width="100%" />').attr('rel',path);
+	    },function(error){
+		navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
+	    },{limit:1});
+         }); 
+   /////
+        $("#btnConsultar").tap(function consul(){
+	$.ajax({
+		type:"POST",
+		url:"consultar.php",
+		data:"",
+		success: function(datos){
+			//alert("Respuesta: "+datos);
+			var reg=$.parseJSON(datos);
+			var contenedor=$("#datos");
+			contenedor.html('<table border="1" id="tb1"><th>Nombre</th><th>Direccion</th><th>Id_RFC</th><th>Telefono</th><th>E-mail</th><th>Clasificacion</th><th>Latitud</th><th>Longitud</th><th>Foto</th>');
+			var fila=$("#tb1");
+			for(var i in reg){
+			fila.append('<tr><td>'+reg[i].Nombre+'</td><td>'+reg[i].Direccion+'</td><td>'+reg[i].RFC+'</td><td>'+reg[i].Telefono+'</td><td>'+reg[i].Email+'</td><td>'+reg[i].Id_Clasif+'</td><td>'+reg[i].Lat+'</td><td>'+reg[i].Lon+'</td></tr>');
+			}
+			fila.append('</table>');
+		}	
+	});
+
+});
+$("#btnConsultar2").tap(function consul(){
+	$.ajax({
+		type:"POST",
+		url:"consultar.php",
+		data:"",
+		success: function(datos){
+			//alert("Respuesta: "+datos);
+			var reg=$.parseJSON(datos);
+			var contenedor=$("#datos2");
+			contenedor.html('<table border="1" id="tb3"><th>Nombre</th><th>Direccion</th><th>Id_RFC</th><th>Telefono</th><th>E-mail</th><th>Clasificacion</th><th>Latitud</th><th>Longitud</th><th>Foto</th>');
+			var fila=$("#tb3");
+			for(var i in reg){
+			fila.append('<tr><td>'+reg[i].Nombre+'</td><td>'+reg[i].Direccion+'</td><td>'+reg[i].RFC+'</td><td>'+reg[i].Telefono+'</td><td>'+reg[i].Email+'</td><td>'+reg[i].Id_Clasif+'</td><td>'+reg[i].Lat+'</td><td>'+reg[i].Lon+'</td></tr>');
+
+			}
+			fila.append('</table>');
+		}	
+	});
+
+});
+$("#btnBuscar").tap(function busq(){
+	var nombre=$("#busNombre").val();
+	$.ajax({
+		type:"POST",url:"buscar.php",
+		data:"Nombre="+nombre,
+		success: function(datos){
+                   // alert("Respuesta: "+datos);
+			var reg=$.parseJSON(datos);
+			var contenedor=$("#resBusqueda");
+			contenedor.html('<table border="1" id="tb2"><th>Nombre</th><th>Direccion</th><th>Id_RFC</th><th>Telefono</th><th>E-mail</th><th>Clasificacion</th><th>Latitud</th><th>Longitud</th><th>Foto</th>');
+			var fila=$("#tb2");
+			for(var i in reg){
+			fila.append('<tr><td>'+reg[i].Nombre+'</td><td>'+reg[i].Direccion+'</td><td>'+reg[i].RFC+'</td><td>'+reg[i].Telefono+'</td><td>'+reg[i].Email+'</td><td>'+reg[i].Id_Clasif+'</td><td>'+reg[i].Lat+'</td><td>'+reg[i].Lon+'</td></tr>');
+
+			}
+			fila.append('</table>');
+		}	
+	});
+});
+$("#btnBusqNC").tap(function busq(){
+	var nc=$("#txtNC").val();
+	$.ajax({
+		type:"POST",url:"buscarNC.php",
+		data:"Nom="+nc,
+		success: function(datos){
+			var reg=$.parseJSON(datos);
+			var contenedor=$("#resBusqNC");
+			contenedor.html('<input type="text" id="txtModId" disabled="true"><br>');
+                        contenedor.append('<input type="text" id="txtModNombre"><br>');
+                        contenedor.append('<input type="text" id="txtModdireccion"><br>');
+                        contenedor.append('<input type="text" id="txtModcla"<br>');
+                        contenedor.append('<input type="text" id="txtModtel"><br>');
+                        var idMod=$("#txtModId");
+                        idMod.val(reg[0].RFC);
+                        var NomMod=$("#txtModNombre");
+                        NomMod.val(reg[0].Nombre);
+                        var ApsMod=$("#txtModdireccion");
+                        ApsMod.val(reg[0].Direccion);
+                        var NCMod=$("#txtModcla");
+                        NCMod.val(reg[0].Id_Clasif);
+                        $("#txtModtel").val(reg[0].Telefono);
+                        //se puede solo hacer de esta forma o agregar como lo anteriorque son los 2
+			/*var fila=$("#tb4");
+			for(var i in reg){
+			fila.append('<tr><td>'+reg[i].IDAlumno+'</td><td>'+reg[i].Nombre+'</td><td>'+reg[i].Apellido+'</td><td>'+reg[i].Numero_control+'</td><td>'+reg[i].Edad+'</td></tr>');
+			}*/
+			//fila.append('</table>');
+		}	
+	});
+});
+$("#btnActualizar").tap(function modif(){
+ var nombre=$("#txtModNombre").val();
+ var dire=$("#txtModdireccion").val();
+ var nocla=$("#txtModcla").val();
+ var celu=$("#txtModtel").val();
+ 
+   $.ajax({
+       type:"POST",
+       url:"Actualizar.php",
+       data:"Nombre="+nombre+"&direccion="+dire+"&clasif="+nocla+"&tel="+celu,
+       success: function (datos){
+       alert("Respuesta: "+datos);
+       }
+   });
+
+});
+$("#btnEliminar").tap(function modif(){
+ var nomb=$("#txtModNombre").val();
+
+ 
+   $.ajax({
+       type:"POST",
+       url:"Eliminar.php",
+       data:"Nombre="+nomb,
+       success: function (datos){
+       alert("Respuesta: "+datos);
+       }
+   });
+
+});
+$("#btnConsultar3").tap(function consul(){
+	$.ajax({
+		type:"POST",
+		url:"consultar.php",
+		data:"",
+		success: function(datos){
+//			alert("Respuesta: "+datos);
+			var reg=$.parseJSON(datos);
+			var contenedor=$("#datos3");
+			contenedor.html('<table border="1" id="tb3"><th>Nombre</th><th>Direccion</th><th>Id_RFC</th><th>Telefono</th><th>E-mail</th><th>Clasificacion</th><th>Latitud</th><th>Longitud</th><th>Foto</th>');
+			var fila=$("#tb3");
+			for(var i in reg){
+			fila.append('<tr><td>'+reg[i].Nombre+'</td><td>'+reg[i].Direccion+'</td><td>'+reg[i].RFC+'</td><td>'+reg[i].Telefono+'</td><td>'+reg[i].Email+'</td><td>'+reg[i].Id_Clasif+'</td><td>'+reg[i].Lat+'</td><td>'+reg[i].Lon+'</td></tr>');
+
+			}
+			fila.append('</table>');
+		}	
+	});
+
+});
+$("#btnBusqNC1").tap(function busq(){
+	var nc=$("#txtNC1").val();
+	$.ajax({
+		type:"POST",url:"buscarNC.php",
+		data:"Nom="+nc,
+		success: function(datos){
+			var reg=$.parseJSON(datos);
+			var contenedor=$("#resBusqNC1");
+			contenedor.html('<input type="text" id="txtModId" disabled="true"><br>');
+                        contenedor.append('<input type="text" id="txtModNombre"><br>');
+                        contenedor.append('<input type="text" id="txtModdireccion"><br>');
+                        contenedor.append('<input type="text" id="txtModcla"<br>');
+                        contenedor.append('<input type="text" id="txtModtel"><br>');
+                        var idMod=$("#txtModId");
+                        idMod.val(reg[0].RFC);
+                        var NomMod=$("#txtModNombre");
+                        NomMod.val(reg[0].Nombre);
+                        var ApsMod=$("#txtModdireccion");
+                        ApsMod.val(reg[0].Direccion);
+                        var NCMod=$("#txtModcla");
+                        NCMod.val(reg[0].Id_Clasif);
+                        $("#txtModtel").val(reg[0].Telefono);
+                        //se puede solo hacer de esta forma o agregar como lo anteriorque son los 2
+			/*var fila=$("#tb4");
+			for(var i in reg){
+			fila.append('<tr><td>'+reg[i].IDAlumno+'</td><td>'+reg[i].Nombre+'</td><td>'+reg[i].Apellido+'</td><td>'+reg[i].Numero_control+'</td><td>'+reg[i].Edad+'</td></tr>');
+			}*/
+			//fila.append('</table>');
+		}	
+	});
+});
+    }
+    function uploadPhoto(foto) {
+	//alert("si entro: "+foto);
+	var options = new FileUploadOptions();
+	options.fileKey="file";
+	options.fileName=$("#Nombre").val();
+	options.mimeType="image/jpeg";
+        //alert("si entro a upload: "+options.fileName);
+	var params = {};
+	params.value1 = "test";
+	params.value2 = "param";
+	options.params = params;
+
+	var ft = new FileTransfer();
+	ft.upload(foto,"http://iscmoviles.890m.com/subirArchivo.php",function(r){
+		navigator.notification.confirm("El archivo: "+r.response,null, "Notificacion");
+	}, function(err){
+		navigator.notification.alert("Error: "+err.code+" detalle: "+err.response,null, "Error de Envío");
+	}, options);
+}
+
+    function obtenerUbicacion(){//Funcion que obtiene la Ubicación del dispositivo móvil
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(exito, falla, opciones);
+
+	  function exito(posic){
+	      var corUbic=new google.maps.LatLng(posic.coords.latitude, posic.coords.longitude);
+	      $("#txtLatitud").val(posic.coords.latitude);
+	      $("#txtLongitud").val(posic.coords.longitude);
+	      marca=new google.maps.Marker({
+		  position:corUbic,
+		  map:map,
+		  title:"Usted esta ubicado aqui",
+		  animation:google.maps.Animation.DROP
+	      });
+
+	      infoVentanta=new google.maps.InfoWindow({
+		  position:corUbic,
+		  content:"<p>Tu Ubicación es: </p>"+corUbic
+	      });
+
+	      google.maps.event.addListener(marca, "click", function(){infoVentanta.open(map,this);});
+	  }
+
+	  function falla(error){
+	      alert("Error en el servicio Geolocalizador: "+error.code+" detalle: "+error.response);
+	  }
+
+	  }else{
+	      alert("Su dispositivo no soporta la geolocalización o no esta habilitada esta funcionalidad");
+	  }
+    }
+
+        function obtenerMarcas(){
+	      $.ajax({
+		type:"POST",
+		url:"http://iscmoviles.890m.com/consultaServ.php",
+		data:"",
+		success: serviciosConsultados
+	      });
+
+	      function serviciosConsultados(datos){
+	      //alert(datos);
+		var respDatos=$.parseJSON(datos);
+		var nombre, dir, tel, mail, lat, lng, ruta;
+		for(var i in respDatos){
+		  nombre=respDatos[i].Nombre;//Cambiarlos de acuerdo a los campos de su base de datos
+		  dir=respDatos[i].Direccion;
+		  tel=respDatos[i].Telefono;
+		  mail=respDatos[i].Email;
+		  lat=respDatos[i].Latitud;
+		  lng=respDatos[i].Longitud;
+		  ruta=respDatos[i].Foto;
+		  dibujarMarcas(nombre, dir, tel, mail, lat, lng, ruta);
+	      }
+	    }
+	}
+
+
+    function dibujarMarcas(nombre, dir, tel, mail, lat, lng, ruta){//habilitar esta función
+ alert("si llego: Lat:"+lat+" Long:"+lng+" ruta: "+ruta );
+         var latlng=new google.maps.LatLng(lat,lng);
+
+	  var marca2=new google.maps.Marker({
+	      position:latlng,
+	      map:map,
+	      title:nombre,
+	      animation:google.maps.Animation.DROP
+	  });
+
+	  var infoVentanta2=new google.maps.InfoWindow({
+	    position:latlng,
+	    //content:"<p>Tu posicion actual es: </p>"+latlng
+	    content:'<div style="width:200px; height:160px;"><div style="text-align: center; color:#5c041b; font-weight:bolder; font-size:12px; font-family:arial;">' + nombre + '</div><img src="http://itslmoviles.260mb.net/'+ruta+'" width="90" heigth="60" /><div style="text-align:center; color: #2e20b8; font-size:12px; font-family:arial; width:200px; text-align:center;">' + dir + '</div><div>Tel: ' + tel + '</div><div>Email:' + mail + '</div>'
+	  });
+	  google.maps.event.addListener(marca2, "click", function(){infoVentanta2.open(map,marca2);});
+    }
+        });
+
+    
+       
+        
+    
+</script>
+<style type="text/css">
+#encabezado{
+text-align:center;
+font-size: 14px;
+color:red;
+font-weight:bold;
+}
+#pie{
+text-align:center;
+font-size:8px;
+color:green;
+font-weight:bold;
+}
+</style>
+</head>
+<body>
+<div data-role="page" id="Principal">
+	<div data-role="header">
+		<h1>Menú principal</h1>
+	</div>
+	<div data-role="content">				
+		<a href="#insertar" data-role="button" data-transition="flip">Registrar Negocio</a>
+		<a href="#consultar" data-role="button" data-transition="slideup">Consultar</a>
+		<a href="#modificar" data-role="button" data-transition="slideup">Modificar</a>
+                <a href="#eliminar" data-role="button" data-transition="slideup">Eliminar</a>
+                <a href="#Desarrolladores" data-role="button" data-transition="slideup">Datos de los Desarrolladores</a>
+  	</div>
+	<div data-role="footer">
+     	   <p>Aplicación Móvil</p>
+	</div>
+</div>
+    
+<div data-role="page" id="insertar">
+	<div data-role="header">
+		<h1>Mi aplicación</h1>
+	</div>
+	<div data-role="content">		
+		<input type="text" value="" placeholder="Nombre del Negocio" id="txtnegocio" />
+		<input type="text" value="" placeholder="Direccion" id="txtdireccion" />
+		<input type="text" placeholder="RFC" id="txtRFC" />
+		<input type="text" placeholder="Telefono" id="txtTel" />
+                <input type="text" value="" placeholder="Correo" id="txtcorreo" />
+                <select id="txtclasif">
+                    <option value="1">Zapatería</option>
+                    <option value="2">Paletería</option>
+                    <option value="3">Dulcería</option>
+                    <option value="4">Tortillería</option>
+                    <option value="5">Butik</option>                    
+                </select>
+                <input type="button" id="btnObtCoords" value="obtener coordenadas"/>
+                <input type="text" id="txtLatitud" placeholder="Latitud"/>
+                <input type="text" id="txtLongitud" placeholder="Longitud"/>
+                
+                <input type="button" value="TomarFoto" id="btnTomarFoto"/>
+                <div id="imagen"></div>	
+		<input type="button" value="Registrar" id="btnEnviar" />
+  	</div>
+	<div data-role="footer" >
+     	   <p >Aplicación Móvill</p>
+            <a href="index.html" data-role="button" data-transition="slideup">Regresar</a>
+	</div>
+</div>
+    <div data-role="page" id="consultar">
+	<div data-role="header">
+		<h1>Consultar</h1>
+	</div>
+	<div data-role="content">				
+		<input type="button" value="Consultar Datos" id="btnConsultar" />
+		<div id="datos"></div>	
+		<input type="text" placeholder="Escribe el nombre del negocio" id="busNombre" />
+		<input type="button" value="Buscar" id="btnBuscar" />	
+		<div id="resBusqueda"></div>
+                
+  	</div>
+	<div data-role="footer">
+     	   <p>Aplicación Movil</p>
+                      <a href="index.html" data-role="button" data-transition="slideup">Regresar</a>
+
+	</div>
+</div>
+    <div data-role="page" id="modificar">
+	<div data-role="header">
+		<h1>Modificar</h1>
+	</div>
+	<div data-role="content">				
+		<input type="button" value="Consultar Datos" id="btnConsultar2" />
+		<div id="datos2"></div>	
+		<input type="text" placeholder="escribe el nombre del negocio" id="txtNC"/>
+		<input type="button" value="Buscar" id="btnBusqNC" />	
+		<div id="resBusqNC"></div>
+                <input type="button" id="btnActualizar" value="Actualizar" />
+                
+  	</div>
+	<div data-role="footer">
+     	   <p>Aplicación Móvill</p>
+           <a href="index.html" data-role="button" data-transition="slideup">Regresar</a>
+	</div>
+</div>
+      <div data-role="page" id="eliminar">
+	<div data-role="header">
+		<h1>Eliminar</h1>
+	</div>
+	<div data-role="content">				
+		<input type="button" value="Consultar todo" id="btnConsultar3" />
+		<div id="datos3"></div>	
+		<input type="text" placeholder="escribe el nombre del negocio" id="txtNC1"/>
+		<input type="button" value="Buscar" id="btnBusqNC1" />	
+		<div id="resBusqNC1"></div>                
+                <input type="button" id="btnEliminar" value="Eliminar" />
+  	</div>
+	<div data-role="footer">
+     	   <p>Aplicación Móvill</p>
+           <a href="index.html" data-role="button" data-transition="slideup">Regresar</a>
+	</div>
+</div>
+    
+    
+    
+    
+    <div data-role="page" id="Desarrolladores">
+	<div data-role="header">
+		<h1>Desarrolladores</h1>
+	</div>
+	<div data-role="content">	
+            <p>Base de Datos para dispositivos móviles</p>
+            <p>Elfego Vargas Rojas "Ingeniería en Sistemas Computacionales"</p>
+            <p>Guadalupe Vazquez Fuentes "Ingeniería en Sistemas Computacionales"</p>
+  	</div>
+	<div data-role="footer">
+     	   <p>Aplicación Móvil</p>
+           <a href="index.html" data-role="button" data-transition="slideup">Regresar</a>
+	</div>
+</div>
+
+    
+
+</body>
+</html>
