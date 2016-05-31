@@ -44,7 +44,7 @@
             
 			$.ajax({
 				type:"POST",
-				url:"guardar.php",
+				url:"http://moviles2017.esy.es/guardar.php",
 				data:"nego="+neg+"&dire="+dir+"&rff="+rfc+"&tell="+tel+"&core="+cor+"&clas="+cla+"&lat="+la+"&logi="+long,
 				success: exitoso
 
@@ -74,7 +74,7 @@
         $("#btnConsultar").tap(function consul(){
 	$.ajax({
 		type:"POST",
-		url:"consultar.php",
+		url:"http://moviles2017.esy.es/consultar.php",
 		data:"",
 		success: function(datos){
 			//alert("Respuesta: "+datos);
@@ -93,7 +93,7 @@
 $("#btnConsultar2").tap(function consul(){
 	$.ajax({
 		type:"POST",
-		url:"consultar.php",
+		url:"http://moviles2017.esy.es/consultar.php",
 		data:"",
 		success: function(datos){
 			//alert("Respuesta: "+datos);
@@ -113,7 +113,7 @@ $("#btnConsultar2").tap(function consul(){
 $("#btnBuscar").tap(function busq(){
 	var nombre=$("#busNombre").val();
 	$.ajax({
-		type:"POST",url:"buscar.php",
+		type:"POST",url:"http://moviles2017.esy.es/buscar.php",
 		data:"Nombre="+nombre,
 		success: function(datos){
                    // alert("Respuesta: "+datos);
@@ -132,7 +132,7 @@ $("#btnBuscar").tap(function busq(){
 $("#btnBusqNC").tap(function busq(){
 	var nc=$("#txtNC").val();
 	$.ajax({
-		type:"POST",url:"buscarNC.php",
+		type:"POST",url:"http://moviles2017.esy.es/buscarNC.php",
 		data:"Nom="+nc,
 		success: function(datos){
 			var reg=$.parseJSON(datos);
@@ -168,7 +168,7 @@ $("#btnActualizar").tap(function modif(){
  
    $.ajax({
        type:"POST",
-       url:"Actualizar.php",
+       url:"http://moviles2017.esy.es/Actualizar.php",
        data:"Nombre="+nombre+"&direccion="+dire+"&clasif="+nocla+"&tel="+celu,
        success: function (datos){
        alert("Respuesta: "+datos);
@@ -193,7 +193,7 @@ $("#btnEliminar").tap(function modif(){
 $("#btnConsultar3").tap(function consul(){
 	$.ajax({
 		type:"POST",
-		url:"consultar.php",
+		url:"http://moviles2017.esy.es/consultar.php",
 		data:"",
 		success: function(datos){
 //			alert("Respuesta: "+datos);
@@ -213,7 +213,7 @@ $("#btnConsultar3").tap(function consul(){
 $("#btnBusqNC1").tap(function busq(){
 	var nc=$("#txtNC1").val();
 	$.ajax({
-		type:"POST",url:"buscarNC.php",
+		type:"POST",url:"http://moviles2017.esy.es/buscarNC.php",
 		data:"Nom="+nc,
 		success: function(datos){
 			var reg=$.parseJSON(datos);
@@ -297,7 +297,7 @@ $("#btnBusqNC1").tap(function busq(){
         function obtenerMarcas(){
 	      $.ajax({
 		type:"POST",
-		url:"http://iscmoviles.890m.com/consultaServ.php",
+		url:"http://moviles2017.esy.es/consultaServ.php",
 		data:"",
 		success: serviciosConsultados
 	      });
