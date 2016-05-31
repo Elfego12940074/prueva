@@ -31,7 +31,7 @@
     function onDeviceReady() {
 	$("#btnEnviar").tap(function env(){
                if($("#imagen").attr("src")==""){
-            alert("Antes de registrar el servicio debe tomar una fotografía del mismo ");
+            alert("Antes de registrar el servicio debe tomar una fotografÃ­a del mismo ");
 	      }else{
 		var neg=$("#txtnegocio").val();
 		var dir=$("#txtdireccion").val();
@@ -258,11 +258,11 @@ $("#btnBusqNC1").tap(function busq(){
 	ft.upload(foto,"http://iscmoviles.890m.com/subirArchivo.php",function(r){
 		navigator.notification.confirm("El archivo: "+r.response,null, "Notificacion");
 	}, function(err){
-		navigator.notification.alert("Error: "+err.code+" detalle: "+err.response,null, "Error de Envío");
+		navigator.notification.alert("Error: "+err.code+" detalle: "+err.response,null, "Error de EnvÃ­o");
 	}, options);
 }
 
-    function obtenerUbicacion(){//Funcion que obtiene la Ubicación del dispositivo móvil
+    function obtenerUbicacion(){//Funcion que obtiene la UbicaciÃ³n del dispositivo mÃ³vil
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(exito, falla, opciones);
 
@@ -279,7 +279,7 @@ $("#btnBusqNC1").tap(function busq(){
 
 	      infoVentanta=new google.maps.InfoWindow({
 		  position:corUbic,
-		  content:"<p>Tu Ubicación es: </p>"+corUbic
+		  content:"<p>Tu UbicaciÃ³n es: </p>"+corUbic
 	      });
 
 	      google.maps.event.addListener(marca, "click", function(){infoVentanta.open(map,this);});
@@ -290,7 +290,7 @@ $("#btnBusqNC1").tap(function busq(){
 	  }
 
 	  }else{
-	      alert("Su dispositivo no soporta la geolocalización o no esta habilitada esta funcionalidad");
+	      alert("Su dispositivo no soporta la geolocalizaciÃ³n o no esta habilitada esta funcionalidad");
 	  }
     }
 
@@ -320,7 +320,7 @@ $("#btnBusqNC1").tap(function busq(){
 	}
 
 
-    function dibujarMarcas(nombre, dir, tel, mail, lat, lng, ruta){//habilitar esta función
+    function dibujarMarcas(nombre, dir, tel, mail, lat, lng, ruta){//habilitar esta funciÃ³n
  alert("si llego: Lat:"+lat+" Long:"+lng+" ruta: "+ruta );
          var latlng=new google.maps.LatLng(lat,lng);
 
@@ -363,7 +363,7 @@ font-weight:bold;
 <body>
 <div data-role="page" id="Principal">
 	<div data-role="header">
-		<h1>Menú principal</h1>
+		<h1>MenÃº principal</h1>
 	</div>
 	<div data-role="content">				
 		<a href="#insertar" data-role="button" data-transition="flip">Registrar Negocio</a>
@@ -373,13 +373,13 @@ font-weight:bold;
                 <a href="#Desarrolladores" data-role="button" data-transition="slideup">Datos de los Desarrolladores</a>
   	</div>
 	<div data-role="footer">
-     	   <p>Aplicación Móvil</p>
+     	   <p>AplicaciÃ³n MÃ³vil</p>
 	</div>
 </div>
     
 <div data-role="page" id="insertar">
 	<div data-role="header">
-		<h1>Mi aplicación</h1>
+		<h1>Mi aplicaciÃ³n</h1>
 	</div>
 	<div data-role="content">		
 		<input type="text" value="" placeholder="Nombre del Negocio" id="txtnegocio" />
@@ -388,10 +388,10 @@ font-weight:bold;
 		<input type="text" placeholder="Telefono" id="txtTel" />
                 <input type="text" value="" placeholder="Correo" id="txtcorreo" />
                 <select id="txtclasif">
-                    <option value="1">Zapatería</option>
-                    <option value="2">Paletería</option>
-                    <option value="3">Dulcería</option>
-                    <option value="4">Tortillería</option>
+                    <option value="1">ZapaterÃ­a</option>
+                    <option value="2">PaleterÃ­a</option>
+                    <option value="3">DulcerÃ­a</option>
+                    <option value="4">TortillerÃ­a</option>
                     <option value="5">Butik</option>                    
                 </select>
                 <input type="button" id="btnObtCoords" value="obtener coordenadas"/>
@@ -403,7 +403,7 @@ font-weight:bold;
 		<input type="button" value="Registrar" id="btnEnviar" />
   	</div>
 	<div data-role="footer" >
-     	   <p >Aplicación Móvill</p>
+     	   <p >AplicaciÃ³n MÃ³vill</p>
             <a href="index.html" data-role="button" data-transition="slideup">Regresar</a>
 	</div>
 </div>
@@ -417,14 +417,30 @@ font-weight:bold;
 		<input type="text" placeholder="Escribe el nombre del negocio" id="busNombre" />
 		<input type="button" value="Buscar" id="btnBuscar" />	
 		<div id="resBusqueda"></div>
+		 <a href="#mapa" data-role="button" data-transition="slideup">Ubicacion</a>
                 
   	</div>
 	<div data-role="footer">
-     	   <p>Aplicación Movil</p>
+     	   <p>AplicaciÃ³n Movil</p>
                       <a href="index.html" data-role="button" data-transition="slideup">Regresar</a>
 
 	</div>
 </div>
+    <div data-role="page" id="mapa" data-url="map-page">
+	<div data-role="header">
+		<h1>ubicacion</h1>
+	   </div>
+      <div data-role="content" >
+	  <div id="map-canvas">Pulse Consultar servicios para identificar su ubicaciÃ³n en el mapa</div>
+      </div>
+      <div data-role="footer" data-position="fixed" style="text-align:center;">
+	<div data-role="controlgroup" data-type="horizontal">
+	<a href="#Principal" class="ui-btn ui-icon-home ui-btn-icon-left">Regresar</a>
+	<a href="#" class="ui-btn ui-icon-search ui-btn-icon-left" id="btnConsServ">Consultar Todos</a>
+  <a href="#" class="ui-btn ui-icon-search ui-btn-icon-left" id="btnConsHotel">Consultar Hoteles</a>
+	</div>
+</div>
+     </div>
     <div data-role="page" id="modificar">
 	<div data-role="header">
 		<h1>Modificar</h1>
@@ -439,7 +455,7 @@ font-weight:bold;
                 
   	</div>
 	<div data-role="footer">
-     	   <p>Aplicación Móvill</p>
+     	   <p>AplicaciÃ³n MÃ³vill</p>
            <a href="index.html" data-role="button" data-transition="slideup">Regresar</a>
 	</div>
 </div>
@@ -456,7 +472,7 @@ font-weight:bold;
                 <input type="button" id="btnEliminar" value="Eliminar" />
   	</div>
 	<div data-role="footer">
-     	   <p>Aplicación Móvill</p>
+     	   <p>AplicaciÃ³n MÃ³vill</p>
            <a href="index.html" data-role="button" data-transition="slideup">Regresar</a>
 	</div>
 </div>
@@ -469,12 +485,12 @@ font-weight:bold;
 		<h1>Desarrolladores</h1>
 	</div>
 	<div data-role="content">	
-            <p>Base de Datos para dispositivos móviles</p>
-            <p>Elfego Vargas Rojas "Ingeniería en Sistemas Computacionales"</p>
-            <p>Guadalupe Vazquez Fuentes "Ingeniería en Sistemas Computacionales"</p>
+            <p>Base de Datos para dispositivos mÃ³viles</p>
+            <p>Elfego Vargas Rojas "IngenierÃ­a en Sistemas Computacionales"</p>
+            <p>Guadalupe Vazquez Fuentes "IngenierÃ­a en Sistemas Computacionales"</p>
   	</div>
 	<div data-role="footer">
-     	   <p>Aplicación Móvil</p>
+     	   <p>AplicaciÃ³n MÃ³vil</p>
            <a href="index.html" data-role="button" data-transition="slideup">Regresar</a>
 	</div>
 </div>
